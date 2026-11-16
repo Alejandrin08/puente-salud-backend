@@ -1,0 +1,4 @@
+# Desarrollo y pruebas (todas las piezas del backend)
+-r services/gateway/requirements.txt
+-r services/seguimiento/requirements.txt
+pytest==8.3.4

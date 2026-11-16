@@ -1,0 +1,98 @@
+{
+  "_ayuda": "Una entrada por dataset. Si encuentras un enlace DIRECTO al archivo (termina en .zip, .csv o .xlsx), ponlo en \"url\" y cambia \"manual\" a false. Si la descarga exige hacer clic en una página, deja \"manual\": true, descarga el archivo en el navegador y guárdalo en data/raw/ con el nombre de \"archivo\". Luego ejecuta: python scripts/fetch_data.py",
+  "datasets": [
+    {
+      "nombre": "defunciones_inegi",
+      "descripcion": "Defunciones registradas (INEGI), microdatos por año (un zip por año: conjunto_de_datos_edrAAAA_csv.zip)",
+      "pagina_consulta": "https://www.inegi.org.mx/programas/edr/#datos_abiertos",
+      "url": "",
+      "archivo": "defunciones_inegi/",
+      "sha256": "",
+      "licencia": "INEGI, términos de libre uso",
+      "fecha_consulta": "2026-11-16",
+      "uso": "contexto de impacto (tablero)",
+      "manual": true,
+      "nota": "Descargar un zip por año desde la página (botones de Datos abiertos) y guardarlos tal cual en data/raw/defunciones_inegi/. Cada zip trae el CSV nacional (~790 mil filas) y catálogos. Filtro para Tlaquepaque: ent_resid == '14' y mun_resid == '098' (residencia habitual). Diabetes: causa_def empieza con E10-E14; enfermedades hipertensivas: I10-I15. El catálogo entidad_municipio_localidad confirma 14/098 = San Pedro Tlaquepaque. Años descargados: ver los zip en data/raw/defunciones_inegi/ (EDR 2025 verificado: Tlaquepaque 3,963 defunciones; 374 por diabetes; 192 hipertensivas)."
+    },
+    {
+      "nombre": "ensanut_continua",
+      "descripcion": "Ensanut Continua 2021-2024 (adultos: diabetes e hipertensión)",
+      "pagina_consulta": "https://ensanut.insp.mx/encuestas/ensanutcontinua2024/descargas.php",
+      "url": "",
+      "archivo": "ensanut_continua/",
+      "sha256": "",
+      "licencia": "INSP, uso académico y público",
+      "fecha_consulta": "",
+      "uso": "parámetros de pacientes simulados",
+      "manual": true,
+      "nota": "OPCIONAL, no se descargó. Representativa por región, no por municipio. Si se usa alguna cifra, citarla del reporte oficial como dato nacional/estatal. Limitación a declarar en el documento: no se usaron microdatos.",
+      "opcional": true
+    },
+    {
+      "nombre": "clues",
+      "descripcion": "Catálogo CLUES de establecimientos de salud (DGIS)",
+      "pagina_consulta": "http://www.dgis.salud.gob.mx/contenidos/intercambio/clues_gobmx.html",
+      "url": "",
+      "archivo": "clues.csv",
+      "sha256": "",
+      "licencia": "Datos abiertos DGIS",
+      "fecha_consulta": "2026-11-16",
+      "uso": "listado de unidades y asignación de folios; mapa con ubicación aproximada",
+      "manual": true,
+      "nota": "Se usó el cierre anual 2024 (CSV, codificación latin-1, 58,121 establecimientos). NO trae coordenadas: las unidades se ubican de forma APROXIMADA por localidad/AGEB y se rotulan como «ubicación aproximada». Sitio DGIS solo abre con http:// (no https). Filtro Tlaquepaque: CLAVE DE LA ENTIDAD 14 y CLAVE DEL MUNICIPIO 098 → 95 establecimientos (90 en operación; 59 privados, 21 SSa, 6 IMSS, 3 municipales, 2 ISSSTE). Si se consigue un catálogo con latitud/longitud, reemplazar el archivo y quitar la etiqueta."
+    },
+    {
+      "nombre": "censo2020_ageb",
+      "descripcion": "Censo 2020, principales resultados por AGEB y manzana urbana, Jalisco",
+      "pagina_consulta": "https://www.inegi.org.mx/programas/ccpv/2020/",
+      "url": "",
+      "archivo": "censo2020_ageb_jalisco.zip",
+      "sha256": "",
+      "licencia": "INEGI, términos de libre uso",
+      "fecha_consulta": "2026-11-16",
+      "uso": "población (18+, 60+), sin afiliación y discapacidad por AGEB",
+      "manual": true,
+      "nota": "Zip de Jalisco (CSV) guardado sin descomprimir. Codificación latin-1; '*' y 'N/D' = dato oculto. Tlaquepaque: MUN=='098'; nivel AGEB: MZA=='000' y AGEB!='0000' → 234 AGEB. Clave de unión: ENTIDAD+MUN+LOC+AGEB. NO existe variable '40 años y más': usar P_18YMAS o P_60YMAS. Variables útiles: POBTOT, P_18YMAS, P_60YMAS, PSINDER, PDER_SS, PCON_DISC, PCON_LIMI."
+    },
+    {
+      "nombre": "marco_geoestadistico_ageb",
+      "descripcion": "Marco Geoestadístico (polígonos de AGEB urbana, Jalisco)",
+      "pagina_consulta": "https://www.inegi.org.mx/programas/mg/",
+      "url": "",
+      "archivo": "mgn_ageb_jalisco.zip",
+      "sha256": "",
+      "licencia": "INEGI, términos de libre uso",
+      "fecha_consulta": "2026-11-16",
+      "uso": "mapa de zonas",
+      "manual": true,
+      "nota": "Edición integrada dic. 2025 (no 2020), pero las claves coinciden al 100% con el Censo 2020 (234/234 AGEB de Tlaquepaque). Zip de Jalisco (14_jalisco.zip), capa conjunto_de_datos/14a.shp (AGEB urbana) y 14mun.shp (municipios). CRS original: MEXICO_ITRF2008_LCC; reproyectar a WGS84 (EPSG:4326) para MapLibre. Tlaquepaque: CVE_MUN=='098' → 237 polígonos (3 sin datos del Censo: 0001-0135, 0001-0154, 0001-0169). Clave: CVE_ENT+CVE_MUN+CVE_LOC+CVE_AGEB."
+    },
+    {
+      "nombre": "rezago_social_ageb",
+      "descripcion": "Grado de rezago social por AGEB urbana 2020 (CONEVAL)",
+      "pagina_consulta": "https://www.coneval.org.mx/Medicion/IRS/Paginas/Rezago_social_AGEB_2020.aspx",
+      "url": "https://www.coneval.org.mx/Medicion/Documents/GRS_AGEB_2020/GRS_AGEB_urbana_2020.zip",
+      "archivo": "rezago_social_ageb_2020.zip",
+      "sha256": "",
+      "licencia": "CONEVAL, datos abiertos",
+      "fecha_consulta": "2026-11-16",
+      "uso": "equidad en el semáforo",
+      "manual": false,
+      "nota": "Zip con GRS_AGEB_urbana_2020.xlsx (hoja 'GRS 2020', nacional). Leer saltando las primeras 6 filas (encabezados multinivel); clave de AGEB de 13 caracteres, columna 'Clave de la AGEB'; grado en la última columna. Tlaquepaque: filtrar clave de municipio '14098' → 232 AGEB con grado (54 Muy bajo, 73 Bajo, 83 Medio, 21 Alto, 1 Muy alto); 2 de las 234 del Censo sin dato (1409800013144, 1409800013360): mostrar «sin dato»."
+    },
+    {
+      "nombre": "mide_jalisco_mortalidad",
+      "descripcion": "Indicadores estatales de mortalidad (MIDE Jalisco)",
+      "pagina_consulta": "https://mide.jalisco.gob.mx",
+      "url": "",
+      "archivo": "mide_mortalidad.csv",
+      "sha256": "",
+      "licencia": "Gobierno de Jalisco",
+      "fecha_consulta": "",
+      "uso": "validar cifras del tablero",
+      "manual": true,
+      "nota": "OPCIONAL, no se descargó. Era solo para validar cifras del tablero.",
+      "opcional": true
+    }
+  ]
+}

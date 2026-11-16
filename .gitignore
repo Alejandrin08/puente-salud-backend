@@ -1,0 +1,35 @@
+# Entorno y secretos
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Datos pesados y modelos grandes
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+ml/artifacts/*.pkl
+ml/artifacts/*.joblib
+*.parquet
+*.gpkg
+*.shp
+
+# Docker y volúmenes
+pgdata/
+
+# Sistema y editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Entorno local de datos
+.venv-datos/
