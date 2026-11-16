@@ -1,0 +1,17 @@
+# Base de datos efímera para las pruebas de integración (pytest).
+# Uso: docker compose -f docker-compose.test.yml up -d   (luego: make test)
+services:
+  db-test:
+    image: postgis/postgis:16-3.4
+    environment:
+      POSTGRES_USER: prueba
+      POSTGRES_PASSWORD: prueba
+      POSTGRES_DB: puente_prueba
+    ports:
+      - "127.0.0.1:55432:5432"
+    tmpfs:
+      - /var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U prueba -d puente_prueba"]
+      interval: 2s
+      retries: 30
