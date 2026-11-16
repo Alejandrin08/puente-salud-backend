@@ -1,0 +1,6 @@
+# Solo para el ETL local (scripts/build_territorio.py). No se instala en los servicios.
+pandas==2.2.3
+geopandas==1.0.1
+pyogrio==0.10.0
+shapely==2.0.6
+openpyxl==3.1.5
