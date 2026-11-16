@@ -6,6 +6,17 @@
 
 *"De cuántas personas se atendieron a cuántas llegaron al control."*
 
+## Pruébalo en línea
+
+| Vista | Dirección | Acceso de demostración |
+|---|---|---|
+| Ciudadanía (persona) | [puente-salud-web-ciudadania.vercel.app](https://puente-salud-web-ciudadania.vercel.app) | folio `PS081368` y código `246810` |
+| Institución: personal de salud | [puente-salud-web-institucion.vercel.app](https://puente-salud-web-institucion.vercel.app) | `enfermeria.tateposco` / `demo-salud` |
+| Institución: autoridad | [puente-salud-web-institucion.vercel.app](https://puente-salud-web-institucion.vercel.app) | `autoridad.rxii` / `demo-autoridad` |
+| API (documentación) | [gateway-production-bb185c96.up.railway.app/docs](https://gateway-production-bb185c96.up.railway.app/docs) | estado: [`/api/v1/estado`](https://gateway-production-bb185c96.up.railway.app/api/v1/estado) |
+
+Frontends en Vercel; gateway, servicios y PostgreSQL + PostGIS en Railway. Los datos de personas son simulados (ver [Datos](#datos)).
+
 ## Visión
 
 Puente Salud apoya la continuidad de la atención de las personas con diabetes e hipertensión detectadas por los programas de salud de San Pedro Tlaquepaque, Jalisco. Ferias, Caravanas, Médicas y Médicos en tu Hogar, Salud Casa por Casa y los centros de salud operan con registros separados. Puente Salud los conecta sin reemplazarlos: un **Folio Único de Seguimiento** reconstruye el recorrido de cada persona, un **semáforo** explicable ordena a quién buscar primero y un **tablero de impacto** mide cuántas personas lleva cada programa al control.
@@ -42,7 +53,7 @@ Puente Salud apoya la continuidad de la atención de las personas con diabetes e
 ```
 Cada servicio sigue `routers → services → repositories`. Sin IA en el MVP: el semáforo es por reglas y el modelo de riesgo de abandono queda como trabajo futuro (ver [ADR 0001](docs/adr/0001-arquitectura.md)).
 
-## Acceder al proyecto
+## Ejecutarlo en local
 
 1. Clonar los tres repositorios **en la misma carpeta** (el `docker-compose.yml` construye los frontends con `../`):
 
@@ -125,8 +136,3 @@ scripts/          fetch_data.py, build_territorio.py, seed.py
 data/             datasets.json (enlaces), raw/ y processed/ (ignorados)
 docs/  design/    investigación, datos, ADR, despliegue, marca
 ```
-
-## Equipo
-
-<!-- PENDIENTE DEL EQUIPO: nombres de los expositores y del asesor (Anexo A de docs/investigacion.md). -->
-Pendiente de completar por el equipo.
