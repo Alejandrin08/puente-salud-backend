@@ -36,7 +36,8 @@ Thumbs.db
 
 # Archivos de trabajo que no van al repositorio
 .impeccable/
-docs/
+docs/*
+!docs/investigacion.md
 design/
 DESIGN.md
 PRODUCT.md

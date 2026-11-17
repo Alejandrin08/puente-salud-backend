@@ -1,3 +1,9 @@
+<p>
+  <img src="assets/gob2025_los_3.png" alt="Gobierno de Jalisco, COECYTJAL e Innovación, Ciencia y Tecnología" height="56" align="left" />
+  <img src="assets/solacyt_.png" alt="SOLACYT, Sociedad Latinoamericana de Ciencia y Tecnología" height="72" align="right" />
+</p>
+<br clear="both" />
+
 <p align="center">
   <img src="assets/logo.svg" alt="Logo de Puente Salud" width="96" />
 </p>
@@ -30,6 +36,7 @@ Puente Salud apoya la continuidad de la atención de las personas con diabetes e
 
 ## Sustento metodológico
 
+- 📘 [`Investigación y revisión multivocal`](docs/investigacion.md): problema, preguntas de investigación, evidencia, reglas del semáforo (Anexo D), diseño del prototipo (Anexo E) y viabilidad.
 - **Investigación descriptiva y de diseño** con una revisión de literatura multivocal (Garousi et al., 2019): 13 fuentes de 53 candidatas. La pérdida ocurre después de la detección; funcionan el registro nominal y los promotores.
 - **Reglas del semáforo** basadas en la NOM-015-SSA2-2010 (diabetes) y la NOM-030-SSA2-2009 (hipertensión). Lo que las normas no fijan (plazos y abandono) se marca como supuesto del proyecto.
 - **Datos oficiales** integrados por la clave de AGEB: INEGI (defunciones, Censo 2020, Marco Geoestadístico), CONEVAL (rezago social), DGIS (CLUES) e ISSSTE (recetas surtidas).
