@@ -151,7 +151,10 @@ def registrar_medicion(conn: psycopg.Connection, ident: Identidad, folio: str, m
     fecha = m.fecha or hoy
     if fecha > hoy:
         raise HTTPException(422, "La fecha de la medición no puede ser futura")
-    mid = repo.insertar_medicion(conn, folio, fecha, m.pas, m.pad, m.glucosa, m.hba1c, PROGRAMA_DE_UNIDAD, ident.usuario)
+    programa = m.programa_id or PROGRAMA_DE_UNIDAD
+    if programa not in repo.programas(conn):
+        raise HTTPException(422, "Programa no reconocido")
+    mid = repo.insertar_medicion(conn, folio, fecha, m.pas, m.pad, m.glucosa, m.hba1c, programa, ident.usuario)
     if m.es_consulta:
         repo.insertar_consulta(conn, folio, fecha, ident.clues)
     e2 = repo.expedientes(conn, folio=folio)[0]

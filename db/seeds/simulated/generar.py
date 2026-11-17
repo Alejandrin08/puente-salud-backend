@@ -48,6 +48,39 @@ LUGARES_FERIA = ["Plaza principal", "Unidad deportiva", "Explanada del mercado",
 
 MED_DM = ["Metformina 850 mg", "Glibenclamida 5 mg"]
 MED_HTA = ["Losartán 50 mg", "Enalapril 10 mg", "Amlodipino 5 mg"]
+# Tabletas por día (para estimar la necesidad mensual)
+DOSIS_DIA = {"Metformina 850 mg": 2, "Glibenclamida 5 mg": 1, "Losartán 50 mg": 1, "Enalapril 10 mg": 1, "Amlodipino 5 mg": 1}
+
+
+class Abasto:
+    """Probabilidad de surtido completo por unidad y medicamento, con periodos de desabasto.
+
+    Usa su propia semilla para no alterar la secuencia de las personas (los folios de demostración no cambian).
+    Base 85% (SSJ reporta 85% en primer nivel; la prensa midió cerca de 60%), con variación por unidad
+    y algunos desabastos de 2 a 4 meses en pares unidad-medicamento.
+    """
+
+    def __init__(self, semilla: int, hoy: date):
+        self.r = random.Random(semilla + 17)
+        self.hoy = hoy
+        self.base: dict[str, float] = {}
+        self.cortes: dict[tuple[str, str], tuple[date, date]] = {}
+
+    def _unidad(self, clues: str) -> float:
+        if clues not in self.base:
+            self.base[clues] = min(max(self.r.gauss(0.84, 0.07), 0.6), 0.97)
+            for m in MED_DM + MED_HTA:
+                if self.r.random() < 0.22:
+                    ini = self.hoy - timedelta(days=self.r.randint(20, 330))
+                    self.cortes[(clues, m)] = (ini, ini + timedelta(days=self.r.randint(60, 120)))
+        return self.base[clues]
+
+    def completo(self, clues: str, med: str, fecha: date) -> bool:
+        p = self._unidad(clues)
+        corte = self.cortes.get((clues, med))
+        if corte and corte[0] <= fecha <= corte[1]:
+            p = 0.25
+        return self.r.random() < p
 
 
 # ---------------------------------------------------------------- utilidades geográficas
@@ -223,6 +256,7 @@ def _medicion(rng: random.Random, enf: list[str], controlado: bool, con_hba1c: b
 
 def generar(agebs: list[dict], unidades_clues: list[dict], hoy: date, n: int = N_PERSONAS, semilla: int = SEMILLA) -> dict:
     rng = random.Random(semilla)
+    abasto = Abasto(semilla, hoy)
     unidades = ubicar_unidades(unidades_clues, agebs, rng)
     ferias = generar_ferias(agebs, hoy, rng)
     de_folios = [u for u in unidades if u["asigna_folios"]]
@@ -312,7 +346,9 @@ def generar(agebs: list[dict], unidades_clues: list[dict], hoy: date, n: int = N
         mediciones.append({"folio": folio, "fecha": fecha_conf, "programa_id": "centros_rxii",
                            **_medicion(rng, enf, controlado, "diabetes" in enf)})
         for m in meds:
-            surtidos.append({"folio": folio, "fecha": fecha_conf, "medicamento": m, "dias": 30, "completo": rng.random() < 0.85})
+            rng.random()  # conserva la secuencia de las personas
+            surtidos.append({"folio": folio, "fecha": fecha_conf, "medicamento": m, "dias": 30,
+                             "completo": abasto.completo(clues, m, fecha_conf)})
 
         # Seguimiento mes a mes
         actual = fecha_conf
@@ -359,7 +395,8 @@ def generar(agebs: list[dict], unidades_clues: list[dict], hoy: date, n: int = N
                                    **_medicion(rng, enf, controlado, con_hba1c)})
                 for m in meds:
                     surtidos.append({"folio": folio, "fecha": proxima, "medicamento": m,
-                                     "dias": 90 if controlado else 30, "completo": rng.random() < 0.85})
+                                     "dias": 90 if controlado else 30,
+                                     "completo": (rng.random(), abasto.completo(clues, m, proxima))[1]})
                 actual = proxima
             else:
                 racha_asist = 0

@@ -113,3 +113,22 @@ async def geo_resumen(s: Sesion = Depends(INSTITUCION)):
 @router.get("/contexto/mortalidad", tags=["autoridad"])
 async def mortalidad(s: Sesion = Depends(INSTITUCION)):
     return await srv.reenviar("territorio", "GET", "/v1/contexto/mortalidad")
+
+
+# ---------------- autoridad: numeralia de medicamentos (informativa)
+AUTORIDAD = con_rol("autoridad")
+
+
+@router.get("/medicamentos", tags=["autoridad"])
+async def medicamentos(s: Sesion = Depends(AUTORIDAD)):
+    return await srv.reenviar("seguimiento", "GET", "/v1/medicamentos", s.cabeceras_internas())
+
+
+@router.get("/medicamentos/export", tags=["autoridad"])
+async def medicamentos_export(s: Sesion = Depends(AUTORIDAD)):
+    return await srv.reenviar("seguimiento", "GET", "/v1/medicamentos/export", s.cabeceras_internas())
+
+
+@router.get("/contexto/surtido", tags=["autoridad"])
+async def referencia_surtido(s: Sesion = Depends(AUTORIDAD)):
+    return await srv.reenviar("territorio", "GET", "/v1/contexto/surtido")

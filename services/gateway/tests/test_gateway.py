@@ -76,3 +76,10 @@ def test_autoridad_no_ve_personas(gw, h_autoridad):
     assert gw.get("/api/v1/seguimiento/pacientes", headers=h_autoridad).status_code == 403
     assert gw.get("/api/v1/pacientes/PS104729", headers=h_autoridad).status_code == 403
     assert gw.get("/api/v1/visitas/ruta", headers=h_autoridad).status_code == 403
+
+
+def test_medicamentos_por_gateway(gw, h_autoridad, h_personal):
+    assert gw.get("/api/v1/medicamentos", headers=h_autoridad).json()["unidades"]
+    assert gw.get("/api/v1/medicamentos/export", headers=h_autoridad).status_code == 200
+    assert gw.get("/api/v1/medicamentos", headers=h_personal).status_code == 403
+    assert len(gw.get("/api/v1/contexto/surtido", headers=h_autoridad).json()["filas"]) == 3

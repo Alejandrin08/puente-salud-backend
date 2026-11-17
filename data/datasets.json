@@ -93,6 +93,19 @@
       "manual": true,
       "nota": "OPCIONAL, no se descargó. Era solo para validar cifras del tablero.",
       "opcional": true
+    },
+    {
+      "nombre": "recetas_issste",
+      "descripcion": "Recetas de medicamentos efectivamente surtidas a la población derechohabiente (ISSSTE): completas, parciales y negadas por unidad médica, CSV mensual",
+      "pagina_consulta": "https://www.datos.gob.mx/dataset/recetas_medicamentos_efectivamente_surtidas_poblacion_derechohabiente",
+      "url": "https://repodatos.atdt.gob.mx/api_update/issste/recetas_medicamentos_efectivamente_surtidas_poblacion_derechohabiente/recetasdemedicamentos_jul_2026.csv",
+      "archivo": "recetas_issste/",
+      "sha256": "",
+      "licencia": "Creative Commons Attribution 4.0",
+      "fecha_consulta": "2026-11-17",
+      "uso": "contexto: referencia real de surtido para la vista Medicamentos",
+      "manual": true,
+      "nota": "El servidor bloquea descargas automáticas (403). Abrir la URL en el navegador, guardar el CSV en data/raw/recetas_issste/. Tlaquepaque tiene 2 unidades ISSSTE (JCIST000750 UMF San Martín de las Flores, JCIST000745)."
     }
   ]
 }

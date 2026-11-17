@@ -47,7 +47,8 @@ Puente Salud apoya la continuidad de la atención de las personas con diabetes e
               /                    \      red privada + INTERNAL_TOKEN
    seguimiento (:8001)        territorio (:8002)
    folio, semáforo (Anexo D),  AGEB + Censo + CONEVAL, CLUES,
-   indicadores (E.4), bitácora ferias, mortalidad INEGI
+   indicadores (E.4), bitácora ferias, mortalidad INEGI,
+   medicamentos                surtido real del ISSSTE
               \                    /
          PostgreSQL 16 + PostGIS (esquemas seguimiento | territorio)
 ```
@@ -110,13 +111,13 @@ cd ../puente-salud-web-institucion && npm test && npm run test:e2e
 ```
 Las pruebas extremo a extremo (Playwright + axe) corren contra el sistema levantado con `docker compose up`. La primera vez: `npx playwright install chromium`. Las e2e escriben en la base local (un desacuerdo y una medición de prueba): antes de una demostración, ejecuta `make reset` para volver a los datos limpios.
 
-Último resultado (16 nov 2026, desde cero): backend 86 (territorio 17, seguimiento 57, gateway 12); ciudadanía 13 unitarias y 8 e2e; institución 16 unitarias y 4 e2e. Todo en verde, sin violaciones de accesibilidad graves ni críticas.
+Último resultado (17 nov 2026, desde cero): backend 94 (territorio 18, seguimiento 63, gateway 13); ciudadanía 13 unitarias y 8 e2e; institución 16 unitarias y 4 e2e. Todo en verde, sin violaciones de accesibilidad graves ni críticas.
 
 ## Datos
 
 | Real | Simulado (rotulado en la interfaz) |
 |---|---|
-| Defunciones INEGI 2023–2025, Censo 2020 por AGEB, Marco Geoestadístico, rezago CONEVAL, catálogo CLUES 2024 | 1,000 personas, folios, CURP, citas, mediciones, tratamientos, surtido, programas, horarios, ferias y ubicación de unidades (CLUES no trae coordenadas) |
+| Defunciones INEGI 2023–2025, Censo 2020 por AGEB, Marco Geoestadístico, rezago CONEVAL, catálogo CLUES 2024, recetas surtidas del ISSSTE (julio 2026) como referencia en Medicamentos | 1,000 personas, folios, CURP, citas, mediciones, tratamientos, surtido de medicamentos por unidad (con periodos de desabasto), programas, horarios, ferias y ubicación de unidades (CLUES no trae coordenadas) |
 
 Los datasets pesados se declaran como enlaces en `data/datasets.json` y no se suben a git. Detalle y limitaciones: [docs/datos.md](docs/datos.md).
 
@@ -132,7 +133,7 @@ db/
   migrations/     001–004 (idempotentes)
   seeds/real/     derivados pequeños de fuentes oficiales
   seeds/simulated/ generador con semilla fija
-scripts/          fetch_data.py, build_territorio.py, seed.py
+scripts/          fetch_data.py, build_territorio.py, build_referencia_surtido.py, seed.py
 data/             datasets.json (enlaces), raw/ y processed/ (ignorados)
 docs/  design/    investigación, datos, ADR, despliegue, marca
 ```

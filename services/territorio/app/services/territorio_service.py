@@ -7,7 +7,8 @@ from datetime import date
 import psycopg
 
 from app.repositories import territorio_repo as repo
-from app.schemas import (Feria, FeatureCollection, Mortalidad, PuntoMortalidad, ResumenMunicipio, SerieMortalidad,
+from app.schemas import (Feria, FeatureCollection, FilaReferencia, Mortalidad, PuntoMortalidad, ReferenciaSurtido,
+                         ResumenMunicipio, SerieMortalidad,
                          Unidad)
 
 ORDEN_REZAGO = ["Muy bajo", "Bajo", "Medio", "Alto", "Muy alto", "Sin dato"]
@@ -90,3 +91,10 @@ def resumen(conn: psycopg.Connection) -> ResumenMunicipio:
         sin_afiliacion_18_est=r["sinder18"], con_discapacidad=r["disc"],
         rezago={k: r["rezago"].get(k, 0) for k in ORDEN_REZAGO}, unidades_publicas=r["publicas"],
         unidades_total=r["total"], fuente="INEGI Censo 2020 (234 AGEB urbanas), CONEVAL 2020, CLUES 2024")
+
+
+def referencia_surtido(conn: psycopg.Connection) -> ReferenciaSurtido:
+    return ReferenciaSurtido(
+        filas=[FilaReferencia(**f) for f in repo.referencia_surtido(conn)],
+        fuente="ISSSTE, «Recetas de medicamentos efectivamente surtidas a la población derechohabiente», datos.gob.mx (CC-BY 4.0)",
+        nota="Dato real de todas las recetas del ISSSTE (no solo diabetes e hipertensión). Sirve como referencia, no se mezcla con el surtido simulado.")

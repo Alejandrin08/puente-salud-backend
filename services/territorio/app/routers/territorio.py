@@ -5,7 +5,7 @@ import psycopg
 from fastapi import APIRouter, Depends, Query
 
 from app.config import get_conn, internal_only
-from app.schemas import Feria, FeatureCollection, Mortalidad, ResumenMunicipio, Unidad
+from app.schemas import Feria, FeatureCollection, Mortalidad, ReferenciaSurtido, ResumenMunicipio, Unidad
 from app.services import territorio_service as svc
 
 router = APIRouter(prefix="/v1", dependencies=[Depends(internal_only)])
@@ -37,3 +37,8 @@ def ferias(desde: date | None = None, lat: float | None = Query(None, ge=-90, le
 @router.get("/contexto/mortalidad", response_model=Mortalidad)
 def mortalidad(conn: psycopg.Connection = Depends(get_conn)):
     return svc.mortalidad(conn)
+
+
+@router.get("/contexto/surtido", response_model=ReferenciaSurtido)
+def referencia_surtido(conn: psycopg.Connection = Depends(get_conn)):
+    return svc.referencia_surtido(conn)

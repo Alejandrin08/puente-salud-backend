@@ -171,6 +171,7 @@ class MedicionIn(BaseModel):
     pad: int | None = Field(None, ge=30, le=200)
     glucosa: int | None = Field(None, ge=20, le=700)
     hba1c: float | None = Field(None, ge=3, le=20)
+    programa_id: str | None = Field(None, max_length=40)
     es_consulta: bool = True
 
     @model_validator(mode="after")
@@ -331,6 +332,42 @@ class IndicadorAgeb(BaseModel):
     prioridad: float | None
     factores: list[str]
     suficiente: bool
+
+
+class MedicamentoFila(BaseModel):
+    medicamento: str
+    enfermedad: str
+    personas_tratamiento: int
+    surtido_completo_pct: float | None
+    recetas_12m: int
+    sin_cobertura: int
+    sin_cobertura_rojo: int
+    sin_cobertura_amarillo: int
+    necesidad_mensual_tabletas: int
+    faltante_mensual_tabletas: int
+
+
+class MedicamentoUnidad(BaseModel):
+    clues: str
+    nombre: str
+    institucion: str
+    personas_tratamiento: int
+    surtido_completo_pct: float | None
+    sin_cobertura: int
+    sin_cobertura_rojo: int
+    sin_cobertura_amarillo: int
+    prioridad: int
+    medicamentos_faltantes: list[dict[str, Any]]
+
+
+class Medicamentos(BaseModel):
+    fecha_corte: date
+    resumen: dict[str, Any]
+    medicamentos: list[MedicamentoFila]
+    unidades: list[MedicamentoUnidad]
+    evolucion: list[dict[str, Any]]
+    definiciones: dict[str, str]
+    simulated: bool = True
 
 
 class IndicadoresAgeb(BaseModel):

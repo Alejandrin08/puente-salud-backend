@@ -65,6 +65,24 @@ class Mortalidad(BaseModel):
     nota: str
 
 
+class FilaReferencia(BaseModel):
+    periodo: str
+    ambito: Literal["nacional", "estatal", "unidad"]
+    nombre: str
+    clues: str | None
+    unidades: int
+    recetas: int
+    completas_pct: float
+    parciales_pct: float
+    negadas_pct: float
+
+
+class ReferenciaSurtido(BaseModel):
+    filas: list[FilaReferencia]
+    fuente: str
+    nota: str
+
+
 class ResumenMunicipio(BaseModel):
     agebs: int
     poblacion: int

@@ -70,6 +70,10 @@ def unidad(conn: psycopg.Connection, clues: str) -> dict | None:
                         (clues,)).fetchone()
 
 
+def unidades(conn: psycopg.Connection) -> dict[str, dict]:
+    return {r["clues"]: r for r in conn.execute("SELECT clues, nombre, institucion FROM seguimiento.unidad_ref")}
+
+
 def ageb(conn: psycopg.Connection, cvegeo: str) -> dict | None:
     return conn.execute("SELECT cvegeo, rezago, lat, lon FROM seguimiento.ageb_ref WHERE cvegeo = %s", (cvegeo,)).fetchone()
 

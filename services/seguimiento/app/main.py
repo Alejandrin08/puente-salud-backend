@@ -8,6 +8,7 @@ app.include_router(personal.router)
 app.include_router(persona.interno)
 app.include_router(persona.router)
 app.include_router(autoridad.router)
+app.include_router(autoridad.medicamentos)
 
 
 @app.get("/health")

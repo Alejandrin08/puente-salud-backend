@@ -6,7 +6,7 @@ import psycopg
 from fastapi.testclient import TestClient
 
 from app.main import app
-from app.schemas import (AccesoOut, DesacuerdoOut, Evolucion, Indicadores, IndicadoresAgeb, MedicionCreada,
+from app.schemas import (AccesoOut, Medicamentos, DesacuerdoOut, Evolucion, Indicadores, IndicadoresAgeb, MedicionCreada,
                          PacienteDetalle, PacienteFila, PersonaInicio, PersonaRecorrido, ResumenSeguimiento, Ruta)
 from tests.conftest import CLUES_DEMO, TEST_DB
 
@@ -159,3 +159,25 @@ def test_exportar_csv(autoridad):
         assert "attachment" in r.headers["content-disposition"]
         filas = list(csv.reader(io.StringIO(r.text)))
         assert "simulados" in filas[0][0] and len(filas) >= filas_min + 2
+
+
+def test_medicamentos_solo_autoridad(autoridad):
+    m = Medicamentos.model_validate(autoridad.get("/v1/medicamentos").json())
+    assert m.resumen["personas_tratamiento"] > 0 and m.resumen["personas_sin_cobertura"] > 0
+    assert {x.medicamento for x in m.medicamentos} >= {"Metformina 850 mg", "Losartán 50 mg"}
+    pr = [u.prioridad for u in m.unidades]
+    assert pr == sorted(pr, reverse=True) and len(m.evolucion) == 12
+    r = autoridad.get("/v1/medicamentos/export")
+    assert r.status_code == 200 and "simulados" in r.text and "attachment" in r.headers["content-disposition"]
+
+
+def test_medicamentos_prohibido_para_personal(personal):
+    assert personal.get("/v1/medicamentos").status_code == 403
+
+
+def test_medicion_con_programa(personal):
+    folio = next(f for f in personal.get("/v1/seguimiento/pacientes").json() if "hipertension" in f["enfermedades"])["folio"]
+    assert personal.post(f"/v1/pacientes/{folio}/mediciones", json={"pas": 120, "pad": 78, "programa_id": "ferias"}).status_code == 201
+    d = personal.get(f"/v1/pacientes/{folio}").json()
+    assert d["mediciones"][-1]["programa_id"] == "ferias" and d["mediciones"][-1]["otro_programa"]
+    assert personal.post(f"/v1/pacientes/{folio}/mediciones", json={"pas": 120, "pad": 78, "programa_id": "inventado"}).status_code == 422

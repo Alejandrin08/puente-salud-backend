@@ -9,9 +9,12 @@ import psycopg
 
 from app.config import Identidad
 from app.repositories import seguimiento_repo as repo
-from app.schemas import (Cuatro, Evolucion, IndicadorAgeb, Indicadores, IndicadoresAgeb, IndicadoresPrograma,
+from app.schemas import (Cuatro, Medicamentos, Evolucion, IndicadorAgeb, Indicadores, IndicadoresAgeb, IndicadoresPrograma,
                          PuntoEvolucion)
 from app.services import indicadores as ind
+from app.services import medicamentos as med
+from app.services.dominio import Parametros
+from app.services.semaforo import evaluar
 
 MINIMO_CASOS = 3
 DEFINICIONES = {
@@ -88,5 +91,41 @@ def exportar_csv(conn: psycopg.Connection, ident: Identidad, hoy: date, por: str
             w.writerow([cvegeo, ctx[cvegeo]["rezago"], ctx[cvegeo]["pct_sinder"]] + [cu[c] for c in campos]
                        + [cu["control_den"] >= MINIMO_CASOS])
     repo.registrar(conn, ident.usuario, ident.rol, "exportar_indicadores", None, {"por": por})
+    conn.commit()
+    return buf.getvalue()
+
+
+DEF_MED = {
+    "surtido_completo": "Recetas surtidas completas ÷ recetas surtidas en los últimos 12 meses.",
+    "sin_cobertura": "Personas en tratamiento cuyo último surtido de algún medicamento fue incompleto, ya se terminó o nunca se surtió.",
+    "necesidad_mensual": "Personas en tratamiento × tabletas al día × 30 días (Metformina 2 al día; el resto, 1).",
+    "prioridad": "3 por cada persona sin cobertura en rojo, 2 en amarillo y 1 en gris o verde. Indica dónde reforzar primero el abasto.",
+}
+
+
+def medicamentos(conn: psycopg.Connection, hoy: date) -> Medicamentos:
+    params = repo.parametros(conn)
+    pares = [(e, evaluar(e, hoy, params.get(e.programa_origen, Parametros()))) for e in repo.expedientes(conn)]
+    d = med.calcular(pares, repo.unidades(conn), hoy)
+    return Medicamentos(fecha_corte=hoy, definiciones=DEF_MED, **d)
+
+
+def exportar_medicamentos_csv(conn: psycopg.Connection, ident: Identidad, hoy: date) -> str:
+    d = medicamentos(conn, hoy)
+    buf = io.StringIO()
+    w = csv.writer(buf)
+    w.writerow(["# Puente Salud · medicamentos · datos simulados", f"corte {hoy.isoformat()}"])
+    w.writerow(["clues", "unidad", "personas_tratamiento", "surtido_completo_pct", "sin_cobertura", "sin_cobertura_rojo",
+                "sin_cobertura_amarillo", "prioridad", "medicamentos_faltantes"])
+    for u in d.unidades:
+        w.writerow([u.clues, u.nombre, u.personas_tratamiento, u.surtido_completo_pct, u.sin_cobertura, u.sin_cobertura_rojo,
+                    u.sin_cobertura_amarillo, u.prioridad, "; ".join(f"{x['medicamento']} ({x['personas']})" for x in u.medicamentos_faltantes)])
+    w.writerow([])
+    w.writerow(["medicamento", "enfermedad", "personas_tratamiento", "surtido_completo_pct", "sin_cobertura",
+                "necesidad_mensual_tabletas", "faltante_mensual_tabletas"])
+    for m in d.medicamentos:
+        w.writerow([m.medicamento, m.enfermedad, m.personas_tratamiento, m.surtido_completo_pct, m.sin_cobertura,
+                    m.necesidad_mensual_tabletas, m.faltante_mensual_tabletas])
+    repo.registrar(conn, ident.usuario, ident.rol, "exportar_medicamentos", None, {})
     conn.commit()
     return buf.getvalue()

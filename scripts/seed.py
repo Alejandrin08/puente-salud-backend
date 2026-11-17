@@ -31,7 +31,7 @@ REAL = ROOT / "db" / "seeds" / "real"
 
 TABLAS_SEG = ["bitacora", "desacuerdo", "consentimiento", "surtido", "tratamiento", "cita", "consulta", "medicion",
               "condicion", "persona", "unidad_ref", "ageb_ref", "parametros_programa", "programa"]
-TABLAS_TER = ["feria", "unidad", "mortalidad", "ageb"]
+TABLAS_TER = ["referencia_surtido", "feria", "unidad", "mortalidad", "ageb"]
 
 
 def migrar(conn: psycopg.Connection, app_user: str | None) -> None:
@@ -96,6 +96,14 @@ def cargar(conn: psycopg.Connection, hoy: date) -> None:
             cur.execute("INSERT INTO territorio.mortalidad VALUES (%s,%s,%s,%s,%s,%s)",
                         (int(r["anio"]), r["causa"], r["sexo"], int(r["defunciones"]), int(r["poblacion_ref"]),
                          float(r["tasa_100k"]) if r["tasa_100k"] else None))
+
+    ref = REAL / "referencia_surtido.csv"
+    if ref.exists():
+        with open(ref, encoding="utf-8") as fh:
+            for r in csv.DictReader(fh):
+                cur.execute("""INSERT INTO territorio.referencia_surtido VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)""",
+                            (r["periodo"], r["ambito"], r["nombre"], r["clues"] or None, int(r["unidades"]), int(r["recetas"]),
+                             float(r["completas_pct"]), float(r["parciales_pct"]), float(r["negadas_pct"])))
 
     # ---- unidades (catálogo real + ubicación, horario y servicios simulados)
     for u in datos["unidades"]:

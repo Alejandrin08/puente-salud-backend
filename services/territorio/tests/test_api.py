@@ -57,3 +57,11 @@ def test_mortalidad_real(client):
     assert [p.defunciones for p in dm.serie] == [432, 437, 374]
     ht = next(s for s in m.series if s.causa == "hipertension")
     assert [p.defunciones for p in ht.serie] == [183, 198, 192]
+
+
+def test_referencia_surtido_real(client):
+    r = client.get("/v1/contexto/surtido").json()
+    ambitos = {f["ambito"] for f in r["filas"]}
+    assert ambitos == {"nacional", "estatal", "unidad"} and "ISSSTE" in r["fuente"]
+    tlaq = next(f for f in r["filas"] if f["ambito"] == "unidad")
+    assert tlaq["clues"] == "JCIST000750" and 0 < tlaq["completas_pct"] <= 100

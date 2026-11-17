@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, Query
 from fastapi.responses import PlainTextResponse
 
 from app.config import Identidad, get_conn, hoy, identidad, internal_only, requiere
-from app.schemas import Evolucion, Indicadores, IndicadoresAgeb
+from app.schemas import Evolucion, Indicadores, IndicadoresAgeb, Medicamentos
 from app.services import autoridad_service as svc
 
 # Solo datos agregados. El personal de salud también puede consultarlos.
@@ -34,3 +34,19 @@ def exportar(por: Literal["programa", "ageb"] = "programa", ident: Identidad = D
     fecha = hoy()
     return PlainTextResponse(svc.exportar_csv(conn, ident, fecha, por), media_type="text/csv; charset=utf-8",
                              headers={"Content-Disposition": f'attachment; filename="puente-salud-indicadores-{por}-{fecha}.csv"'})
+
+
+medicamentos = APIRouter(prefix="/v1/medicamentos", tags=["autoridad"],
+                         dependencies=[Depends(internal_only), Depends(requiere("autoridad"))])
+
+
+@medicamentos.get("", response_model=Medicamentos)
+def numeralia_medicamentos(conn: psycopg.Connection = Depends(get_conn)):
+    return svc.medicamentos(conn, hoy())
+
+
+@medicamentos.get("/export", response_class=PlainTextResponse)
+def exportar_medicamentos(ident: Identidad = Depends(identidad), conn: psycopg.Connection = Depends(get_conn)):
+    fecha = hoy()
+    return PlainTextResponse(svc.exportar_medicamentos_csv(conn, ident, fecha), media_type="text/csv; charset=utf-8",
+                             headers={"Content-Disposition": f'attachment; filename="puente-salud-medicamentos-{fecha}.csv"'})

@@ -38,6 +38,16 @@ def mortalidad(conn: psycopg.Connection) -> list[dict]:
     ).fetchall()
 
 
+def referencia_surtido(conn: psycopg.Connection) -> list[dict]:
+    return conn.execute(
+        """SELECT periodo, ambito, nombre, clues, unidades, recetas, completas_pct::float AS completas_pct,
+                  parciales_pct::float AS parciales_pct, negadas_pct::float AS negadas_pct
+             FROM territorio.referencia_surtido
+            WHERE periodo = (SELECT max(periodo) FROM territorio.referencia_surtido)
+            ORDER BY CASE ambito WHEN 'unidad' THEN 0 WHEN 'estatal' THEN 1 ELSE 2 END, nombre"""
+    ).fetchall()
+
+
 def resumen(conn: psycopg.Connection) -> dict:
     tot = conn.execute(
         """SELECT count(*) AS agebs, coalesce(sum(pobtot),0) AS poblacion, coalesce(sum(p_18ymas),0) AS p18,
