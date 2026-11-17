@@ -1,5 +1,5 @@
 -- 003 · Seguimiento: Folio Único de Seguimiento y recorrido (datos simulados en el MVP)
--- Mapeo a HL7 FHIR R4 en docs/fhir-mapeo.md
+-- Cada tabla corresponde a un recurso HL7 FHIR R4 (indicado al lado)
 
 CREATE TABLE IF NOT EXISTS seguimiento.programa (            -- Organization
   id        text PRIMARY KEY,

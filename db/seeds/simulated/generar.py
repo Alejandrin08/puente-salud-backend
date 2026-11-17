@@ -2,7 +2,7 @@
 
 Todo lo que sale de aquí es SIMULADO y se marca así (columna `simulated` / `datos_simulados`).
 Se parametriza con datos reales (población adulta y sin afiliación por AGEB del Censo 2020,
-rezago CONEVAL, catálogo CLUES) y con tasas publicadas (Anexo C y E.7 de docs/investigacion.md):
+rezago CONEVAL, catálogo CLUES) y con tasas publicadas (Anexos C y E.7 de la investigación):
   - control de diabetes ~25-33% (Basto-Abreu 2024), hipertensión tratada en control ~60% (Campos-Nonato 2025)
   - la pérdida ocurre después de la detección (Lozano 2021): la confirmación varía mucho por programa.
 

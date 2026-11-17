@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="design/brand/logo.svg" alt="Logo de Puente Salud" width="96" />
+  <img src="assets/logo.svg" alt="Logo de Puente Salud" width="96" />
 </p>
 
 # Puente Salud
@@ -30,11 +30,10 @@ Puente Salud apoya la continuidad de la atención de las personas con diabetes e
 
 ## Sustento metodológico
 
-- 📘 [`Investigación y revisión multivocal`](docs/investigacion.md): problema, evidencia, reglas del semáforo (Anexo D) y diseño (Anexo E).
-- 🧭 [`Datos y fuentes`](docs/datos.md): perfil de los datasets, qué es real y qué es simulado, calibración y limitaciones.
-- ✅ [`Requisitos y trazabilidad`](docs/requisitos-mvp.md): cada elemento del documento, con su pantalla, endpoint, prueba y estado.
-- 🏗️ [`Decisiones de arquitectura`](docs/adr/): por qué está construido así.
-- 🔗 [`Mapeo a HL7 FHIR R4`](docs/fhir-mapeo.md) · 🚀 [`Despliegue`](docs/despliegue.md) · 🎨 [`Paleta y contraste`](design/brand/paleta.md)
+- **Investigación descriptiva y de diseño** con una revisión de literatura multivocal (Garousi et al., 2019): 13 fuentes de 53 candidatas. La pérdida ocurre después de la detección; funcionan el registro nominal y los promotores.
+- **Reglas del semáforo** basadas en la NOM-015-SSA2-2010 (diabetes) y la NOM-030-SSA2-2009 (hipertensión). Lo que las normas no fijan (plazos y abandono) se marca como supuesto del proyecto.
+- **Datos oficiales** integrados por la clave de AGEB: INEGI (defunciones, Censo 2020, Marco Geoestadístico), CONEVAL (rezago social), DGIS (CLUES) e ISSSTE (recetas surtidas).
+- **Modelo de datos** alineado con los recursos de HL7 FHIR R4 del conjunto mínimo (Patient, Observation, Appointment, Encounter, MedicationRequest, MedicationDispense, Consent, AuditEvent).
 
 ## Arquitectura
 
@@ -52,7 +51,7 @@ Puente Salud apoya la continuidad de la atención de las personas con diabetes e
               \                    /
          PostgreSQL 16 + PostGIS (esquemas seguimiento | territorio)
 ```
-Cada servicio sigue `routers → services → repositories`. Sin IA en el MVP: el semáforo es por reglas y el modelo de riesgo de abandono queda como trabajo futuro (ver [ADR 0001](docs/adr/0001-arquitectura.md)).
+Cada servicio sigue `routers → services → repositories`. Sin IA en el MVP: el semáforo es por reglas y el modelo de riesgo de abandono queda como trabajo futuro.
 
 ## Ejecutarlo en local
 
@@ -119,7 +118,7 @@ Las pruebas extremo a extremo (Playwright + axe) corren contra el sistema levant
 |---|---|
 | Defunciones INEGI 2023–2025, Censo 2020 por AGEB, Marco Geoestadístico, rezago CONEVAL, catálogo CLUES 2024, recetas surtidas del ISSSTE (julio 2026) como referencia en Medicamentos | 1,000 personas, folios, CURP, citas, mediciones, tratamientos, surtido de medicamentos por unidad (con periodos de desabasto), programas, horarios, ferias y ubicación de unidades (CLUES no trae coordenadas) |
 
-Los datasets pesados se declaran como enlaces en `data/datasets.json` y no se suben a git. Detalle y limitaciones: [docs/datos.md](docs/datos.md).
+Los datasets pesados se declaran como enlaces en `data/datasets.json` y no se suben a git.
 
 ## Estructura del repositorio
 
@@ -135,5 +134,5 @@ db/
   seeds/simulated/ generador con semilla fija
 scripts/          fetch_data.py, build_territorio.py, build_referencia_surtido.py, seed.py
 data/             datasets.json (enlaces), raw/ y processed/ (ignorados)
-docs/  design/    investigación, datos, ADR, despliegue, marca
+assets/           logo
 ```

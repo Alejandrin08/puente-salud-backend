@@ -1,4 +1,4 @@
-"""Semáforo de seguimiento (Anexo D de docs/investigacion.md).
+"""Semáforo de seguimiento (Anexo D de la investigación).
 
 Tres dimensiones —control clínico, seguimiento y riesgo de abandono— y se toma la más grave.
 Gris solo si no hay ninguna medición clínica, y nunca se muestra como verde.

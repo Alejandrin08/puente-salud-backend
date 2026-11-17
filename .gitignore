@@ -33,3 +33,10 @@ Thumbs.db
 
 # Entorno local de datos
 .venv-datos/
+
+# Archivos de trabajo que no van al repositorio
+.impeccable/
+docs/
+design/
+DESIGN.md
+PRODUCT.md
