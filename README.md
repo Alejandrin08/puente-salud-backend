@@ -36,7 +36,7 @@ Puente Salud apoya la continuidad de la atención de las personas con diabetes e
 
 ## Sustento metodológico
 
-- 📘 [`Investigación y revisión multivocal`](docs/investigacion.md): problema, preguntas de investigación, evidencia, reglas del semáforo (Anexo D), diseño del prototipo (Anexo E) y viabilidad.
+- 📘 [`Investigación y revisión multivocal`](docs/investigacion.md): problema, objetivos, contexto teórico, metodología, resultados, discusión y conclusiones.
 - **Investigación descriptiva y de diseño** con una revisión de literatura multivocal (Garousi et al., 2019): 13 fuentes de 53 candidatas. La pérdida ocurre después de la detección; funcionan el registro nominal y los promotores.
 - **Reglas del semáforo** basadas en la NOM-015-SSA2-2010 (diabetes) y la NOM-030-SSA2-2009 (hipertensión). Lo que las normas no fijan (plazos y abandono) se marca como supuesto del proyecto.
 - **Datos oficiales** integrados por la clave de AGEB: INEGI (defunciones, Censo 2020, Marco Geoestadístico), CONEVAL (rezago social), DGIS (CLUES) e ISSSTE (recetas surtidas).
@@ -52,7 +52,7 @@ Puente Salud apoya la continuidad de la atención de las personas con diabetes e
             gateway (FastAPI, :8000)  ← único servicio público: login, roles, CORS
               /                    \      red privada + INTERNAL_TOKEN
    seguimiento (:8001)        territorio (:8002)
-   folio, semáforo (Anexo D),  AGEB + Censo + CONEVAL, CLUES,
+   folio, semáforo (reglas NOM), AGEB + Censo + CONEVAL, CLUES,
    indicadores (E.4), bitácora ferias, mortalidad INEGI,
    medicamentos                surtido real del ISSSTE
               \                    /
